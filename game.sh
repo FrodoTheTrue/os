@@ -5,6 +5,7 @@ pipe2=/tmp/pipe2
 role_type=0
 gameLoop=true
 gameOver=false
+noHod=false
 
 function deleteByRoleFIFO {
 	if [ $role_type -eq 1 ]; then
@@ -72,7 +73,39 @@ function showTable {
 	echo └─┴─┴─┘
 	echo Player: $role_type
 }
-
+function checkNoHod {
+    countHod=0
+    if [[ ${a[1]} != ' ' ]]; then
+    	countHod=$((countHod + 1))
+    fi
+    if [[ ${a[2]} != ' ' ]]; then
+        countHod=$((countHod + 1))
+    fi
+    if [[ ${a[3]} != ' ' ]]; then
+        countHod=$((countHod + 1))
+    fi
+    if [[ ${a[4]} != ' ' ]]; then
+        countHod=$((countHod + 1))
+    fi
+    if [[ ${a[5]} != ' ' ]]; then
+        countHod=$((countHod + 1))
+    fi
+    if [[ ${a[6]} != ' ' ]]; then
+        countHod=$((countHod + 1))
+    fi
+    if [[ ${a[7]} != ' ' ]]; then
+        countHod=$((countHod + 1))
+    fi
+    if [[ ${a[8]} != ' ' ]]; then
+        countHod=$((countHod + 1))
+    fi
+    if [[ ${a[9]} != ' ' ]]; then
+        countHod=$((countHod + 1))
+    fi
+    if [[ $countHod -eq 9 ]]; then
+        noHod=true
+    fi
+}
 function checkWin {
 
 	win[1]=${a[1]}${a[2]}${a[3]}
@@ -139,20 +172,39 @@ while $gameLoop
 			read -p 'Ваш ход: ' hod
 			col=${hod:2:3}
 			row=${hod:0:1}
+			errorRow=true
+			errorCol=true
+
+			if [ $col == 1 ]; then
+                errorCol=false
+            fi
+            if [ $col == 2 ]; then
+                errorCol=false
+            fi
+            if [ $col == 3 ]; then
+                errorCol=false
+            fi
+
 			if [ $row == 1 ]; then
-				error=false
+				errorRow=false
 				numberToArray=$col
 			fi
 			if [ $row == 2 ]; then
-				error=false
+				errorRow=false
 				numberToArray=$col+3
 			fi
 			if [ $row == 3 ]; then
-				error=false
+				errorRow=false
 				numberToArray=$col+6
 			fi
+
+			if [[ $errorCol == false && $errorRow == false ]]; then
+                error=false
+            fi
+
 			if [ $error == true ]; then
-				echo "ERROR IN PRINTING. TRY AGAIN"
+			    echo '                                   '
+                set_cursor 8 0
 			fi
 
 			if [ $error == false ]; then
@@ -162,6 +214,7 @@ while $gameLoop
 				showTable
 
 				checkWin
+				checkNoHod
 				
 				echo Waiting opponent ...
 				echo -n $numberToArray > $out
@@ -175,6 +228,13 @@ while $gameLoop
 					echo "you win"
 					gameLoop=false
 				fi
+				if [ $noHod == true ]; then
+                    set_cursor 8 0
+                    echo '                                   '
+                    set_cursor 8 0
+                    echo "no way"
+                    gameLoop=false
+                fi
 			fi
 		else 
 			read numberToArray < $inp
@@ -187,6 +247,7 @@ while $gameLoop
 			myHod=true
 
 			checkWin
+			checkNoHod
 
 			if [ $gameOver == true ]; then
 				set_cursor 8 0
@@ -195,14 +256,14 @@ while $gameLoop
 				echo "you loose"
 				gameLoop=false
 			fi
+			if [ $noHod == true ]; then
+                set_cursor 8 0
+                echo '                                   '
+                set_cursor 8 0
+                echo "no way"
+                gameLoop=false
+            fi
 		fi
 	done
 
 deleteByRoleFIFO
-
-
-
-
-
-
-
