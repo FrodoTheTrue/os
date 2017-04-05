@@ -218,6 +218,7 @@ while $gameLoop
 				showTable
 
 				checkWin
+
 				checkNoHod
 				
 				echo Waiting opponent ...
@@ -232,7 +233,7 @@ while $gameLoop
 					echo "you win"
 					gameLoop=false
 				fi
-				if [ $noHod == true ]; then
+				if [[ $noHod == true && $gameOver != true ]]; then
                     set_cursor 8 0
                     echo '                                   '
                     set_cursor 8 0
@@ -260,7 +261,7 @@ while $gameLoop
 				echo "you loose"
 				gameLoop=false
 			fi
-			if [ $noHod == true ]; then
+			if [[ $noHod == true && $gameOver != true ]]; then
                 set_cursor 8 0
                 echo '                                   '
                 set_cursor 8 0
