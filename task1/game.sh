@@ -207,6 +207,10 @@ while $gameLoop
                 set_cursor 8 0
 			fi
 
+			if [[ "${a[$numberToArray]}" != " " ]]; then
+			    error=true
+			fi
+
 			if [ $error == false ]; then
 				a[$numberToArray]=$mySymbol
 
