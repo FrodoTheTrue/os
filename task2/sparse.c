@@ -1,9 +1,11 @@
 #include <stdio.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <string.h>
 #include <fcntl.h>
+
+typedef int bool;
+#define true 1
+#define false 0
 
 void generateSparse(int fd) {
 	char byte;
@@ -11,13 +13,19 @@ void generateSparse(int fd) {
 	isNonZero = false;
 	while(read(0, &byte, 1)) {
 		if (byte == 0) {
-			lseek(fd, 1, SEEK_CUR);
+			if (lseek(fd, 1, SEEK_CUR) <= 0) {
+				printf("Error printing to file");
+				exit(1);
+			}
 			continue;
 		}
-		isNonZero = true
-		write(fd, &byte, 1);
+		isNonZero = true;
+		if (write(fd, &byte, 1) <= 0) {
+			printf("Error printing to file");
+			exit(1);
+		};
 	}
-	if (!isNonZero) {
+	if (isNonZero == true) {
 		write(fd, 0, 1);
 	}
 }
