@@ -6,10 +6,10 @@
 
 #define MAX_NUMBERS 1000000000
 
-int countNumbers = 0;
-long long numbersArray[MAX_NUMBERS];
+long long int countNumbers = 0;
+// long long int numbersArray[MAX_NUMBERS];
 
-int takeNumbers(int fd) {
+int takeNumbers(int fd, long long int * numbersArray) {
 	int numberSize = 0;
 	int isNegativeNumber = 0;
 	int isCreatingNumber = 0;
@@ -42,7 +42,7 @@ int takeNumbers(int fd) {
 						if (isNegativeNumber) {
 							currentNumber = currentNumber * -1;
 						}
-						// numbersArray = realloc(numbersArray, countNumbers * sizeof(long long int) + 1);
+						numbersArray = realloc(numbersArray, countNumbers * sizeof(long long int) + 2);
 						numbersArray[countNumbers] = currentNumber;
 						countNumbers = countNumbers + 1;
 					}
@@ -72,14 +72,14 @@ int main(int argc, char *argv[]) {
         printf("Need 2 and more arguments\n");
         return -1;
     }
-    // long long int *numbersArray = (long long int*) malloc(0 * sizeof(long long int));
+    long long int *numbersArray = (long long int*) malloc(0 * sizeof(long long int));
     for (int i=0;i<argc-2;i++) {
     	int fd = open(argv[i+1], O_RDONLY);
 		if (fd == -1) {
 			printf("Error openning file with numbers\n");
 			return -1;
 		}
-		takeNumbers(fd);
+		takeNumbers(fd, numbersArray);
     }
    
 	qsort(numbersArray, countNumbers, sizeof(long long), compareNumbers);
