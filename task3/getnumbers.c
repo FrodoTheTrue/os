@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#define MAX_NUMBERS 100000
+#define MAX_NUMBERS 1000000000
 
 int countNumbers = 0;
 long long numbersArray[MAX_NUMBERS];
@@ -37,10 +37,12 @@ int takeNumbers(int fd) {
 					numberSize = 0;
 					if (MAX_NUMBERS == countNumbers) {
 						printf("Too much numbers\n");
+						exit(1);
 					} else {
 						if (isNegativeNumber) {
 							currentNumber = currentNumber * -1;
 						}
+						// numbersArray = realloc(numbersArray, countNumbers * sizeof(long long int) + 1);
 						numbersArray[countNumbers] = currentNumber;
 						countNumbers = countNumbers + 1;
 					}
@@ -70,6 +72,7 @@ int main(int argc, char *argv[]) {
         printf("Need 2 and more arguments\n");
         return -1;
     }
+    // long long int *numbersArray = (long long int*) malloc(0 * sizeof(long long int));
     for (int i=0;i<argc-2;i++) {
     	int fd = open(argv[i+1], O_RDONLY);
 		if (fd == -1) {
@@ -88,13 +91,12 @@ int main(int argc, char *argv[]) {
     }
     int i;
     for (i = 0; i < countNumbers; i++) {
-		int res = dprintf(fd_result, "%d\n", numbersArray[i]);
+		int res = dprintf(fd_result, "%lld\n", numbersArray[i]);
 		if (res < 0) {
 			printf("Error write number to file");
 			exit(1);
 		}
 	}
-
 
 	close(fd_result);
 }
