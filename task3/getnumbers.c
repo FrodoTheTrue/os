@@ -57,6 +57,14 @@ int takeNumbers(int fd) {
 	}
 }
 
+
+int compareNumbers(const void * n1, const void * n2) 
+{
+    if (*((long long*)n1) > *((long long*)n2)) return  1;
+    if (*((long long*)n1) < *((long long*)n2)) return -1;
+    return 0;
+}
+
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
         printf("Need 2 and more arguments\n");
@@ -70,7 +78,10 @@ int main(int argc, char *argv[]) {
 		}
 		takeNumbers(fd);
     }
-    int fd_result = open(argv[argc-1], O_WRONLY);
+   
+	qsort(numbersArray, countNumbers, sizeof(long long), compareNumbers);
+
+	int fd_result = open(argv[argc-1], O_WRONLY);
     if (fd_result == -1) {
     	printf("Error openning result file\n");
 		return -1;
@@ -83,5 +94,7 @@ int main(int argc, char *argv[]) {
 			exit(1);
 		}
 	}
+
+
 	close(fd_result);
 }
